@@ -3,12 +3,20 @@
 module Main where
 
 import           Data.List
+import           Data.Maybe
 
 main :: IO ()
-main = runSolution solution1
+main = runSolution solution1 >> runSolution solution2
 
-solution2 :: [String] -> String
-solution2 list = "TODO"
+solution2 :: [String] -> [String]
+solution2 list = catMaybes $ concatMap search list
+  where
+    search str = map (similars str) list
+    matchLength str = length str - 1
+    similars str1 str2 =
+      if length (filter (== True) $ zipWith (==) str1 str2) == matchLength str1
+        then Just (str1 `intersect` str2)
+        else Nothing
 
 solution1 :: [String] -> Int
 solution1 = reduce . map f
